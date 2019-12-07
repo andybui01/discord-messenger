@@ -5,6 +5,8 @@ const Discord = require("discord.js");
 
 const discord = new Discord.Client();
 
+const discordChannelID = '652674650861731841'
+const fbThreadID = '100005639376179'
 
 login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) => {
     if(err) return console.error(err);
@@ -16,27 +18,17 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
     api.listenMqtt((err, message) => {
         // Check to see if facebook message body is not empty ...
         if (message.body != undefined) {
-            discord.channels.get('652674650861731841').send(message.body)
+            discord.channels.get(discordChannelID).send(message.body)
         }
     });
 
     discord.on('message', message => {
         // Ignore messages from bot ...
         if (message.author.bot) return;
-        api.sendMessage(message.content, '100005639376179');
+        
+        api.sendMessage(message.content, fbThreadID);
     });
 });
 
-
-// discord.once('ready', () => {
-//     	console.log('Ready!');
-//     });
-//
-// discord.on('message', message => {
-//     // Ignore messages from bot ...
-//     if (message.author.bot) return;
-//     console.log(message.channel.id)
-// 	message.channel.send('Pong.');
-// });
 
 discord.login(process.env.TOKEN)
