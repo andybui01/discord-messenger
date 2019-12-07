@@ -18,7 +18,18 @@ Navigate to the Bots section of your discord developer portal and copy your acce
 
 After this you're ready to go! Use your favourite text editor to modify the .env file with your facebook credentials as well as the access token you copied down in the first step.
 
-## Starting bot
+## Start the bot
+```
+FB_EMAIL=YOUREMAIL FB_PASS=YOURPASSWORD TOKEN=YOURACCESSTOKENnode index.js
+```
+## Start the bot (alternative)
+You can also create a .env file and add these lines
+```
+FB_EMAIL=YOUREMAIL
+FB_PASS=YOURPASSWORD
+TOKEN=YOURACCESSTOKEN
+```
+then run
 ```
 node index.js
 ```
