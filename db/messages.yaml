@@ -1,0 +1,10 @@
+messages: []
+numMessages: 0
+
+# messages:
+#   - id: message id
+#     body: body/content of message sent
+#     reacts: array of reacts
+#     senderID: id of sender
+#     is_fb: boolean value, true if message is from facebook
+# numMessages: 0
