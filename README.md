@@ -20,7 +20,7 @@ After this you're ready to go! Use your favourite text editor to modify the .env
 
 ## Start the bot
 ```
-FB_EMAIL=YOUREMAIL FB_PASS=YOURPASSWORD TOKEN=YOURACCESSTOKENnode index.js
+FB_EMAIL=YOUREMAIL FB_PASS=YOURPASSWORD TOKEN=YOURACCESSTOKEN node index.js
 ```
 ## Start the bot (alternative)
 You can also create a .env file and add these lines
