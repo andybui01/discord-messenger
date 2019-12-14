@@ -21,29 +21,26 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
     // Discord channel object
     const dc_channel = discord.channels.get(discordChannelID);
 
-    console.log(bot_id)
-
     discord.once('ready', () => {
     	console.log('Discord bot ready!');
     });
 
     helpers.clearMessages();
     // Set messenger bot to listen to itself ...
-    api.setOptions({selfListen: true});
-
+    api.setOptions({
+        selfListen: true,
+        listenEvents: true
+    });
 
     // Monitor events in facebook chat ...
     api.listenMqtt((err, event) => {
         console.log(event.type);
         switch(event.type){
-
             // If message was sent
             case "message":
                 // Check to see if facebook message body is not empty ...
                 if (event.body != undefined) {
                     // Check who message author is
-                    console.log(event.senderID);
-                    console.log(bot_id);
                     if (event.senderID != bot_id) {
                         // Write message to database
                         var msg_id = helpers.writeMessage(event.body, event.senderID, true);
@@ -77,8 +74,6 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
                         // Log messenger id of message received
                         helpers.setFacebookId(msg_id, event.messageID);
 
-
-
                         dc_channel.fetchMessage(helpers.MsgIdToId(replied_id)["dc_id"])
                         .then(
                             replied => {
@@ -94,20 +89,21 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
                                 );
                             }
                         );
-
                     } else {
-                        console.log(event.body);
                         var msg_id = helpers.contentToMsgId(event.body);
-                        console.log(msg_id);
-                        console.log(event.messageID);
                         helpers.setFacebookId(msg_id, event.messageID);
                     }
-
                 }
                 break;
             // If a message reaction occurred
             case "message_reaction":
-                console.log("Someone reacted!");
+                var msg_id = helpers.IdToMsgId(event.messageID);
+                var dc_id = helpers.MsgIdToId(msg_id)["dc_id"];
+                dc_channel.fetchMessage(dc_id).then(
+                    dc_message => {
+                        dc_message.react(event.reaction);
+                    }
+                );
                 break;
         }
     });
@@ -115,7 +111,6 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
     discord.on('message', message => {
         // Ignore messages from bot
         if (message.author.bot) return;
-
 
         var sent_msg = message.content;
         // Split message to detect commands
