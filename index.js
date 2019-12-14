@@ -21,7 +21,6 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
     // Discord channel object
     const dc_channel = discord.channels.get(discordChannelID);
 
-
     console.log(bot_id)
 
     discord.once('ready', () => {
@@ -95,8 +94,6 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
                                 );
                             }
                         );
-                        // Send message in discord and log id of message sent
-
 
                     } else {
                         console.log(event.body);
@@ -116,13 +113,32 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
     });
 
     discord.on('message', message => {
-        // Ignore messages from bot ...
+        // Ignore messages from bot
         if (message.author.bot) return;
 
-        // Write message to database
-        var msg_id = helpers.writeMessage(message.content, message.author.id, false);
+
+        var sent_msg = message.content;
+        // Split message to detect commands
+        var msg_array = message.content.split(" ");
+
+        // If message is of type reply
+        if (msg_array[0] == "/reply" && msg_array.length >= 2) {
+            var replied_id = msg_array[1];
+
+            // Grab the facebook id of message from database
+            var replied_msg_id = helpers.IdToMsgId(replied_id);
+            var fb_id = helpers.MsgIdToId(replied_msg_id)["fb_id"];
+            // Join message without reply and id of message being replied to
+            sent_msg = msg_array.slice(2).join(" ");
+
+            // TODO: FIX CODE REPETITION
+            var msg_id = helpers.writeMessage(sent_msg, message.author.id, false);
+            helpers.setReply(msg_id, replied_msg_id);
+        } else {
+            var msg_id = helpers.writeMessage(sent_msg, message.author.id, false);
+        }
         helpers.setDiscordId(msg_id, message.id);
-        api.sendMessage(message.content, fbThreadID);
+        api.sendMessage(sent_msg, fbThreadID, fb_id);
     });
 });
 

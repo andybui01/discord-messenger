@@ -1,20 +1,2 @@
-messages:
-  - msg_id: 0
-    body: test
-    senderID: '137738096790863873'
-    isFb: false
-    platform_id:
-      fb_id: mid.$cAAAACQdM1nd1NU1uY1vBAgk6aH30
-      dc_id: '655361006964572172'
-    reacts: null
-    replyTo: null
-  - msg_id: 1
-    body: test reply
-    senderID: 100005639376179
-    isFb: true
-    platform_id:
-      fb_id: mid.$cAAAACQdM1nd1NU2PjlvBAhHIZ0Op
-      dc_id: '655361045820604467'
-    reacts: null
-    replyTo: 0
-numMessages: 2
+messages: []
+numMessages: 0
