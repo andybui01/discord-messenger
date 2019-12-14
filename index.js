@@ -7,12 +7,11 @@ const Discord = require("discord.js");
 const discord = new Discord.Client();
 
 const helpers = require('./helpers');
-const reacts = yaml.safeLoad(fs.readFileSync('db/reacts.yaml','utf8'))
 
 const discordChannelID = '652674650861731841'
 const fbThreadID = '100005639376179'
 
-login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) => {
+login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
 
     // Save facebook id of messenger bot ...
@@ -97,14 +96,22 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
                 break;
             // If a message reaction occurred
             case "message_reaction":
-                var msg_id = helpers.IdToMsgId(event.messageID);
-                var dc_id = helpers.MsgIdToId(msg_id)["dc_id"];
-                dc_channel.fetchMessage(dc_id).then(
-                    dc_message => {
-                        dc_message.react(event.reaction);
+                if (event.reaction != undefined) {
+                    if (event.userID != bot_id) {
+                        var msg_id = helpers.IdToMsgId(event.messageID);
+                        var dc_id = helpers.MsgIdToId(msg_id)["dc_id"];
+                        dc_channel.fetchMessage(dc_id).then(
+                            dc_message => {
+                                dc_message.react(event.reaction);
+                            }
+                        );
+                        break;
                     }
-                );
-                break;
+                } else {
+                    console.log("Removing emoji");
+                    console.log(event);
+                }
+
         }
     });
 
@@ -134,6 +141,24 @@ login({email: process.env.FB_EMAIL, password: process.env.FB_PASS}, (err, api) =
         }
         helpers.setDiscordId(msg_id, message.id);
         api.sendMessage(sent_msg, fbThreadID, fb_id);
+    });
+
+    // React
+    discord.on('messageReactionAdd', (reaction, user) => {
+        if (user.bot) return;
+
+        var msg_id = helpers.IdToMsgId(reaction.message.id);
+        var fb_id = helpers.MsgIdToId(msg_id)["fb_id"];
+        api.setMessageReaction(reaction.emoji.name, fb_id);
+    });
+
+    // Unreact
+    discord.on('messageReactionRemove', (reaction, user) => {
+        if (user.bot) return;
+
+        var msg_id = helpers.IdToMsgId(reaction.message.id);
+        var fb_id = helpers.MsgIdToId(msg_id)["fb_id"];
+        api.setMessageReaction("", fb_id);
     });
 });
 

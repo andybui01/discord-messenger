@@ -118,7 +118,7 @@ exports.setDiscordId = function(msg_id, dc_id) {
     });
 }
 
-exports.writeMessage = function(body,  senderID, is_fb) {
+exports.writeMessage = function(body,  senderID) {
 
     let messages = yaml.load(fs.readFileSync('db/messages.yaml', 'utf8'));
     var msg_id = messages.numMessages;
@@ -127,12 +127,10 @@ exports.writeMessage = function(body,  senderID, is_fb) {
     var newMsg = {msg_id: msg_id,
        body: body,
        senderID: senderID,
-       isFb: is_fb,
        platform_id: {
            fb_id: null,
            dc_id: null
        },
-       reacts: null,
        replyTo: null};
 
     // Increment total number of messages stored
