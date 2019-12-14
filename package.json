@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/andybui01/discord-messenger#readme",
   "dependencies": {
+    "@discordjs/uws": "^10.149.0",
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
-    "facebook-chat-api": "github:Schmavery/facebook-chat-api",
+    "facebook-chat-api": "github:schmavery/facebook-chat-api",
     "fs": "0.0.1-security",
     "js-yaml": "^3.13.1"
   }
