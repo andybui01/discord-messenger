@@ -20,7 +20,7 @@
     "@discordjs/uws": "^10.149.0",
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
-    "facebook-chat-api": "github:schmavery/facebook-chat-api",
+    "facebook-chat-api": "github:andybui01/facebook-chat-api",
     "fs": "0.0.1-security",
     "js-yaml": "^3.13.1"
   }
